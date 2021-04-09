@@ -1,0 +1,25 @@
+version: "3"
+services:
+  verdaccio:
+    image: verdaccio/verdaccio:4.12
+    # container_name: verdaccio
+    expose: [4873]
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.verdaccio.rule=Host(`verdaccio.hameentie.online`)"
+      - "traefik.http.routers.verdaccio.tls.certResolver=myResolver"
+      - "traefik.http.routers.verdaccio.tls.domains[0].sans=*.hameentie.online"
+    volumes:
+      - verdaccio_storage:/verdaccio/storage
+      - type: bind
+        source: ./conf
+        target: /verdaccio/conf
+        read_only: true
+
+volumes:
+  verdaccio_storage:
+
+networks:
+  default:
+    external:
+      name: traefik
